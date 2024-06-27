@@ -1,1 +1,1 @@
-{"version":1,"defects":{"App\\Tests\\ProductTest::testItWorks":5,"App\\Tests\\ProductTest::testProducts":5},"times":{"App\\Tests\\ProductTest::testItWorks":0.353,"App\\Tests\\ProductTest::testProducts":0.003}}
+{"version":1,"defects":{"App\\Tests\\ProductTest::testItWorks":5,"App\\Tests\\ProductTest::testProducts":8},"times":{"App\\Tests\\ProductTest::testItWorks":0.353,"App\\Tests\\ProductTest::testProducts":0.003}}

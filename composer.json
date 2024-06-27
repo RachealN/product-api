@@ -51,6 +51,7 @@
     "scripts": {
         "test":"vendor/bin/phpunit",
         "phpstan": "php -d memory_limit=256M vendor/bin/phpstan analyse",
+        "phpcs": "vendor/bin/phpcs --standard=ruleset.xml src/",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
@@ -78,6 +79,7 @@
         "phpstan/phpstan": "^1.11",
         "phpstan/phpstan-doctrine": "^1.4",
         "phpunit/phpunit": "^11.2",
+        "squizlabs/php_codesniffer": "*",
         "symfony/browser-kit": "7.1.*",
         "symfony/css-selector": "7.1.*",
         "symfony/phpunit-bridge": "^7.1"
