@@ -30,8 +30,26 @@ class ProductsController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $product = $this->productService->createProduct($data);
+        $product = $this->productService->store($data);
 
         return $this->json(['message' => 'Product created successfully', 'product' => $product], 201);
+    }
+
+    #[Route('/product/{id}', name: 'update_product', methods: ['PUT'])]
+    public function update(Request $request, Product $product): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $product = $this->productService->store($data, $product);
+
+        return $this->json(['message' => 'Product updated successfully', 'product' => $product], 200);
+    }
+
+    #[Route('/product/{id}', name: 'delete_product', methods: ['DELETE'])]
+    public function delete(Product $product): JsonResponse
+    {
+        $this->productService->deleteProduct($product);
+
+        return $this->json(['message' => 'Product deleted successfully'], 200);
     }
 }

@@ -23,10 +23,17 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function save(Product $product): void
+    public function createOrUpdate(Product $product): void
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($product);
+        $entityManager->flush();
+    }
+
+    public function deleteProduct(Product $product): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($product);
         $entityManager->flush();
     }
 }

@@ -19,16 +19,27 @@ class ProductService
         return $this->productRepository->findAllProducts();
     }
 
-    public function createProduct(array $data): Product
+    public function store(array $data, ?Product $existingProduct = null): Product
     {
-        $product = new Product();
-        $product->setName($data['name']);
-        $product->setPrice($data['price']);
-        $product->setStockQuantity($data['stock_quantity']);
-        $product->setDescription($data['description']);
 
-        $this->productRepository->save($product);
+        if (!$existingProduct) {
+            $product = new Product();
+        } else {
+            $product = $existingProduct;
+        }
+
+        $product->setName($data['name'] ?? $product->getName());
+        $product->setPrice($data['price'] ?? $product->getPrice());
+        $product->setStockQuantity($data['stock_quantity'] ?? $product->getStockQuantity());
+        $product->setDescription($data['description'] ?? $product->getDescription());
+
+        $this->productRepository->createOrUpdate($product);
 
         return $product;
+    }
+
+    public function deleteProduct(Product $product): void
+    {
+        $this->productRepository->deleteProduct($product);
     }
 }
