@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Service\ProductService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProductsController extends AbstractController
 {
@@ -21,5 +23,15 @@ class ProductsController extends AbstractController
     {
         $products = $this->productService->getAllProducts();
         return $this->json($products);
+    }
+
+    #[Route('/product/create', name: 'product_create', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $product = $this->productService->createProduct($data);
+
+        return $this->json(['message' => 'Product created successfully', 'product' => $product], 201);
     }
 }
