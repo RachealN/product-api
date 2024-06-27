@@ -1,0 +1,1 @@
+{"version":1,"defects":{"App\\Tests\\ProductTest::test_can_get_all_products":5},"times":{"App\\Tests\\ProductTest::test_can_get_all_products":0.021}}
