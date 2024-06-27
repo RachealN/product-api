@@ -1,0 +1,20 @@
+parameters:
+    level: 6
+    paths:
+        - src/
+        - tests/
+    bootstrapFiles:
+        - %rootDir%/../../autoload.php 
+    
+    checkUninitializedProperties: true
+    inferPrivatePropertyTypeFromConstructor: true
+    
+    ignoreErrors:
+        - '#Property .* has no type specified#'
+        - '#Property .* is never read, only written#'
+        - '#Method .* has no return type specified#'
+
+    
+
+    
+    
