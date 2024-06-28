@@ -6,6 +6,8 @@
 /var/
 /vendor/
 phpstan.neon
+.env
+test.env
 
 
 ###> squizlabs/php_codesniffer ###
