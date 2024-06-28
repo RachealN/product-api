@@ -19,6 +19,11 @@ class ProductService
         return $this->productRepository->findAllProducts();
     }
 
+    public function getProductById(int $id)
+    {
+        return $this->productRepository->findProductById($id);
+    }
+
     public function store(array $data, ?Product $existingProduct = null): Product
     {
 

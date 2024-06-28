@@ -23,6 +23,11 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findProductById(int $id): ?Product
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
     public function createOrUpdate(Product $product): void
     {
         $entityManager = $this->getEntityManager();

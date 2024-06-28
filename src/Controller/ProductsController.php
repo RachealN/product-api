@@ -20,11 +20,35 @@ class ProductsController extends AbstractController
         $this->productService = $productService;
     }
 
+    private function validateProduct(ValidatorInterface $validator, $product)
+    {
+        $violations = $validator->validate($product);
+
+        if (count($violations) > 0) {
+            // You can modify this response handling as needed
+            return $this->json($violations, JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        return null; 
+    }
+
     #[Route('/products', name: 'products')]
     public function index(): JsonResponse
     {
         $products = $this->productService->getAllProducts();
         return $this->json($products);
+    }
+
+    #[Route('/product/{id}', name: 'product_show', methods: ['GET'])]
+    public function show(int $id): JsonResponse
+    {
+        $product = $this->productService->getProductById($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException('Product not found');
+        }
+
+        return $this->json($product);
     }
 
     #[Route('/product/create', name: 'product_create', methods: ['POST'])]
@@ -34,21 +58,27 @@ class ProductsController extends AbstractController
 
         $product = $this->productService->store($data);
 
-        $violations = $validator->validate($product);
-
-        if(count($violations) > 0){
-            return $this->json($violations);
+        // Validate the product
+        $validationResult = $this->validateProduct($validator, $product);
+        if ($validationResult !== null) {
+            return $validationResult;
         }
 
         return $this->json(['message' => 'Product created successfully', 'product' => $product], 201);
     }
 
     #[Route('/product/{id}', name: 'update_product', methods: ['PUT'])]
-    public function update(Request $request, Product $product): JsonResponse
+    public function update(Request $request, Product $product, ValidatorInterface $validator): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         $product = $this->productService->store($data, $product);
+
+        // Validate the product
+        $validationResult = $this->validateProduct($validator, $product);
+        if ($validationResult !== null) {
+            return $validationResult;
+        }
 
         return $this->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
