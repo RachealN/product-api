@@ -38,7 +38,7 @@ class ProductsController extends AbstractController
         return $this->json($products, 200);
     }
 
-    #[Route('/product/{id}', name: 'product_show', methods: ['GET'])]
+    #[Route('/products/{id}', name: 'product_show', methods: ['GET'])]
     public function show(int $id): JsonResponse
     {
         $product = $this->productService->getProductById($id);
@@ -50,7 +50,7 @@ class ProductsController extends AbstractController
         return $this->json($product);
     }
 
-    #[Route('/product/create', name: 'product_create', methods: ['POST'])]
+    #[Route('/products/create', name: 'product_create', methods: ['POST'])]
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -66,7 +66,7 @@ class ProductsController extends AbstractController
         return $this->json(['message' => 'Product created successfully', 'product' => $product], 201);
     }
 
-    #[Route('/product/{id}', name: 'update_product', methods: ['PUT'])]
+    #[Route('/products/{id}', name: 'update_product', methods: ['PUT'])]
     public function update(Request $request, Product $product, ValidatorInterface $validator): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -82,7 +82,7 @@ class ProductsController extends AbstractController
         return $this->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
 
-    #[Route('/product/{id}', name: 'delete_product', methods: ['DELETE'])]
+    #[Route('/products/{id}', name: 'delete_product', methods: ['DELETE'])]
     public function delete(Product $product): JsonResponse
     {
         $this->productService->deleteProduct($product);
