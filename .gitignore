@@ -8,8 +8,6 @@
 phpstan.neon
 /.env
 /test.env
-.env
-test.env
 
 
 ###> squizlabs/php_codesniffer ###
