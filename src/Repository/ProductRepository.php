@@ -23,28 +23,22 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findProductById(int $id): ?Product
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function createOrUpdate(Product $product): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($product);
+        $entityManager->flush();
+    }
+
+    public function deleteProduct(Product $product): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($product);
+        $entityManager->flush();
+    }
 }

@@ -8,11 +8,16 @@ RUN docker-php-ext-install pdo pdo_mysql zip gd
 
 RUN a2enmod rewrite
 
+
 WORKDIR /var/www
 
 COPY . /var/www
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install PHPUnit
+RUN curl -fsSL -o /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar \
+    && chmod +x /usr/local/bin/phpunit
 
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-scripts --no-autoloader
 

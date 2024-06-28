@@ -7,12 +7,26 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
+    depends_on:
+      - db
+      - phpunit
 
   db:
     platform: linux/x86_64
     image: mysql:5.7
     environment:
-      MYSQL_DATABASE: product-api
+      MYSQL_DATABASE: product-api-test
       MYSQL_USER: root
       MYSQL_PASSWORD: secret123
       MYSQL_ROOT_PASSWORD: secret123
+  
+  phpunit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: ["phpunit"]
+    depends_on:
+      - db

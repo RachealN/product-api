@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProductRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -13,13 +14,28 @@ class Product
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Name cannot be blank')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Name must be at least {{ limit }} characters long',
+        maxMessage: 'Name cannot be longer than {{ limit }} characters'
+    )]
+    private string $name;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Price cannot be blank')]
+    #[Assert\Positive(message: 'Price must be a positive number')]
     private ?string $price = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Stock quantity cannot be blank')]
+    #[Assert\Positive(message: 'Stock quantity must be a positive number')]
+    #[Assert\LessThanOrEqual(
+        value: 10000,
+        message: 'Stock quantity cannot exceed {{ compared_value }}'
+    )]
     private ?int $stock_quantity = null;
 
     #[ORM\Column(length: 255, nullable: true)]
