@@ -25,7 +25,6 @@ class ProductsController extends AbstractController
         $violations = $validator->validate($product);
 
         if (count($violations) > 0) {
-            // You can modify this response handling as needed
             return $this->json($violations, JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -36,7 +35,7 @@ class ProductsController extends AbstractController
     public function index(): JsonResponse
     {
         $products = $this->productService->getAllProducts();
-        return $this->json($products);
+        return $this->json($products, 200);
     }
 
     #[Route('/product/{id}', name: 'product_show', methods: ['GET'])]
