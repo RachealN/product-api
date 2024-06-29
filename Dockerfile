@@ -1,29 +1,24 @@
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y \
-  git zip unzip libpng-dev \
-  libzip-dev default-mysql-client
+RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip \
+    && docker-php-ext-install intl opcache pdo pdo_mysql \
+    && pecl install apcu \
+    && docker-php-ext-enable apcu \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip
 
-RUN docker-php-ext-install pdo pdo_mysql zip gd
+WORKDIR /var/www/project
 
-RUN a2enmod rewrite
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN curl -sS https://get.symfony.com/cli/installer | bash
 
-WORKDIR /var/www
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
-COPY . /var/www
+COPY . /var/www/project
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install PHPUnit
-RUN curl -fsSL -o /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar \
-    && chmod +x /usr/local/bin/phpunit
-
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-scripts --no-autoloader
+RUN chown -R www-data:www-data /var/www/project
 
 EXPOSE 80
-
-RUN sed -i 's!/var/www/html!/var/www/html/public!g' \
-  /etc/apache2/sites-available/000-default.conf
 
 CMD ["apache2-foreground"]
