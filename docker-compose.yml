@@ -53,13 +53,3 @@ services:
       MYSQL_PASSWORD: secret123
     networks:
       - nginx-php74-mysql8-node
-
-  # node
-  node-service:
-    image: node:latest
-    container_name: node-container
-    volumes:
-      - ./app:/var/www/project
-    working_dir: /var/www/project
-    networks:
-      - nginx-php74-mysql8-node
