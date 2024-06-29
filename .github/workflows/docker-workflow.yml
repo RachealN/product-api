@@ -1,0 +1,53 @@
+name: PHP Composer & Docker Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.8
+        options: --privileged
+        ports:
+          - 8080:8080
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        id: docker-buildx
+        run: |
+          docker build --platform=local -o . github.com/docker/buildx
+          mkdir -p ~/.docker/cli-plugins
+          mv buildx ~/.docker/cli-plugins/docker-buildx
+          docker buildx create --name mybuilder
+          docker buildx use mybuilder
+
+      - name: Build and run Docker container
+        run: |
+          docker-compose -f docker-compose.yml up -d --build
+        working-directory: ${{ github.workspace }}
+
+      - name: Wait for Docker services to start
+        run: docker-compose -f docker-compose.yml exec -T php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name: Install Composer dependencies
+        run: docker-compose -f docker-compose.yml exec php composer install
+        working-directory: ${{ github.workspace }}
+
+      - name: Run PHPUnit tests
+        run: docker-compose -f docker-compose.yml exec php vendor/bin/phpunit
+        working-directory: ${{ github.workspace }}
+
+      - name: Stop Docker containers
+        run: docker-compose -f docker-compose.yml down
+        working-directory: ${{ github.workspace }}
