@@ -1,13 +1,13 @@
-name: PHPStan,PHP_CodeSniffer and PHPUnit Coverage Report
+name: PHPStan, PHP_CodeSniffer, and PHPUnit Coverage Report
 
-push:
-    branches: ["main"]
-    paths:
-      - '.github/reporting.yml'
-      - '**.php'
- pull_request:
+on:  
+  push:
     branches-ignore:
       - main
+  pull_request:
+    branches-ignore:
+      - main
+
 permissions:
   contents: write
 
@@ -25,7 +25,6 @@ jobs:
           MYSQL_DATABASE: product-api
           MYSQL_USER: root
           MYSQL_PASSWORD: secret123
-          
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
@@ -45,17 +44,23 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: ./vendor/bin/phpunit
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Run PHP_CodeSniffer
-      run: ./vendor/bin/phpcs --standard=PSR12 src/
+      run: vendor/bin/phpcs --standard=ruleset.xml src/
 
     - name: Run PHPStan
-      run: ./vendor/bin/phpstan analyse src --level=max
+      run: php -d memory_limit=256M vendor/bin/phpstan analyse
+
+    - name: Upload PHPUnit coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: coverage.xml
 
     - name: Upload PHPStan report
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: phpstan-report
-          path: phpstan.neon
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: phpstan-report
+        path: phpstan.neon
