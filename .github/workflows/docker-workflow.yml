@@ -42,9 +42,10 @@ jobs:
           docker-compose -f docker-compose.yml up -d
         working-directory: ${{ github.workspace }}
 
-      - name: Install Composer dependencies
-        run: docker-compose -f docker-compose.yml exec php composer install
-        working-directory: ${{ github.workspace }}
+      - name: Build and run Docker containers
+        run: |
+          docker-compose -f docker-compose.yml up -d --build
+          docker-compose -f docker-compose.yml exec php composer install --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run PHPUnit tests
         run: docker-compose -f docker-compose.yml exec php vendor/bin/phpunit
