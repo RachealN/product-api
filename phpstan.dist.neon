@@ -3,7 +3,6 @@ parameters:
     paths:
         - src/
         - tests/
-    memory_limit: 256M
     bootstrapFiles:
         - %rootDir%/../../autoload.php 
     
