@@ -30,8 +30,6 @@ jobs:
         with:
           php-version: 7.0
           extensions: mbstring, intl, pdo_mysql
-      - name: Install PHP dependencies
-        run: bash install_dependencies.sh
 
       - name: Run PHPUnit tests
         run: phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml

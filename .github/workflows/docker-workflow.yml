@@ -38,7 +38,9 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Wait for Docker services to start
-        run: docker-compose -f docker-compose.yml exec -T php bin/console doctrine:migrations:migrate --no-interaction
+        run: |
+          docker-compose -f docker-compose.yml up -d
+        working-directory: ${{ github.workspace }}
 
       - name: Install Composer dependencies
         run: docker-compose -f docker-compose.yml exec php composer install
