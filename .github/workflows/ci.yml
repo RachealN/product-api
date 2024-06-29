@@ -12,22 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        ports:
-          - 3307:3306
-        env:
-          MYSQL_ROOT_PASSWORD: secret123
-          MYSQL_DATABASE: product-api
-          MYSQL_USER: root
-          MYSQL_PASSWORD: secret123
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - uses: actions/checkout@v2
 
@@ -47,7 +31,7 @@ jobs:
         run: vendor/bin/phpcs --standard=ruleset.xml src/
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: vendor/bin/phpstan analyse --configuration=phpstan.dist.neon
 
       - name: Upload PHPUnit coverage report
         uses: actions/upload-artifact@v4
@@ -60,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: phpstan-report
-          path: phpstan.neon
+          path: phpstan.dist.neon
