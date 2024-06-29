@@ -50,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-          ath: coverage.xml
+        path: coverage.xml
 
     - name: Upload PHPStan report
       if: always()
