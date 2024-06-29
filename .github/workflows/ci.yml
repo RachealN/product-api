@@ -35,9 +35,6 @@ jobs:
           php-version: 7.0
           extensions: mbstring, intl, pdo_mysql
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit
 
