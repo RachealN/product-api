@@ -22,35 +22,32 @@ jobs:
       - 3307:3306
     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-  steps:
-    - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 7.0
-        extensions: mbstring, intl, pdo_mysql
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.0
+          extensions: mbstring, intl, pdo_mysql
 
-    - name: Install dependencies
-      run: bash ci/docker_install.sh
+      - name: Install dependencies
+        run: bash ci/docker_install.sh
 
-    - name: Run PHPUnit tests
-      run: phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml
+      - name: Run PHPUnit tests
+        run: phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml
 
-    - name: Run PHPStan
-      run: composer phpstan | tee phpstan_results.txt
+      - name: Run PHPStan
+        run: composer phpstan | tee phpstan_results.txt
 
-    - name: Run security checker
-      run: security-checker security:check
+      - name: Run security checker
+        run: security-checker security:check
 
-    - name: Run washing machine
-      run: /root/washingmachine/washingmachine run -v
-
-    - name: Upload PHPUnit coverage report
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: coverage.xml
+      - name: Upload PHPUnit coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
 
     - name: Upload PHPStan report
       if: always()
