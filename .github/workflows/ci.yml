@@ -1,6 +1,6 @@
 name: PHPStan, PHP_CodeSniffer, and PHPUnit Coverage Report
 
-on:  
+on:
   push:
     branches-ignore:
       - main
@@ -50,17 +50,17 @@ jobs:
       run: vendor/bin/phpcs --standard=ruleset.xml src/
 
     - name: Run PHPStan
-      run: php -d memory_limit=256M vendor/bin/phpstan analyse
+      run: php -d memory_limit=256M vendor/bin/phpstan analyse --configuration=phpstan.neon
 
     - name: Upload PHPUnit coverage report
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: coverage-report
         path: coverage.xml
 
     - name: Upload PHPStan report
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: phpstan-report
         path: phpstan.neon
