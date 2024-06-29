@@ -1,0 +1,61 @@
+name: PHPStan,PHP_CodeSniffer and PHPUnit Coverage Report
+
+push:
+    branches: ["main"]
+    paths:
+      - '.github/reporting.yml'
+      - '**.php'
+ pull_request:
+    branches-ignore:
+      - main
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3307:3306
+        env:
+          MYSQL_ROOT_PASSWORD: secret123
+          MYSQL_DATABASE: product-api
+          MYSQL_USER: root
+          MYSQL_PASSWORD: secret123
+          
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: mbstring, intl, pdo_mysql
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: Run PHPUnit
+      run: ./vendor/bin/phpunit
+
+    - name: Run PHP_CodeSniffer
+      run: ./vendor/bin/phpcs --standard=PSR12 src/
+
+    - name: Run PHPStan
+      run: ./vendor/bin/phpstan analyse src --level=max
+
+    - name: Upload PHPStan report
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: phpstan-report
+          path: phpstan.neon
