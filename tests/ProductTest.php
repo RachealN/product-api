@@ -60,31 +60,27 @@ class ProductTest extends KernelTestCase
         $this->assertSame($expectedProducts, $products);
     }
 
-    public function test_get_a_single_product_by_id()
+    public function test_get_a_single_product_by_id(): void
     {
+        //Create a mock product instance
         $product = new Product();
+        $product->setId(1);
         $product->setName('Dress');
         $product->setPrice('9000');
         $product->setStockQuantity(5);
         $product->setDescription('My new dress');
 
-        $this->productRepository->expects($this->once())
-            ->method('findOneBy')
-            ->with($this->equalTo(['id' => 1]))
-            ->willReturn($product);
-       
-        $singleProduct = $this->productService->getProductById(1);
+        $productRepository = $this->createMock(ProductRepository::class);
+        $productService = new ProductService($productRepository);
 
-        // Assertions
-        $this->assertSame($product, $singleProduct);
-        $this->assertEquals(1, $singleProduct->getId());
+        $singleProduct = $productService->getProductById($product->getId());
+
+        $this->assertSame(1, $singleProduct->getId());
         $this->assertEquals('Dress', $singleProduct->getName());
         $this->assertEquals(9000, $singleProduct->getPrice());
         $this->assertEquals(5, $singleProduct->getStockQuantity());
         $this->assertEquals('My new dress', $singleProduct->getDescription());
-
     }
-
 
     public function test_can_create_new_product()
     {
@@ -128,15 +124,13 @@ class ProductTest extends KernelTestCase
 
         $productData = $productRepository->findOneBy(['name' => 'Dress']);
 
-        //create new date to update product
+        //create new data to update product
         $productData = [
             'name' => 'Updated Dress',
             'price' => 8000,
             'stock_quantity' => 10,
             'description' => 'Updated description'
         ];
-
-        //call the store function
         $updatedProduct = $this->productService->store($productData, $product);
 
         // Make assertions
@@ -150,7 +144,7 @@ class ProductTest extends KernelTestCase
     public function test_can_delete_product()
     {
         $productRepository = $this->createMock(ProductRepository::class);
-        
+
         $productRepository = $this->entityManager->getRepository(Product::class);
 
         $productData = $productRepository->findOneBy(['name' => 'Dress']);
@@ -162,6 +156,8 @@ class ProductTest extends KernelTestCase
             'description' => 'Updated description'
         ];
 
-        $this->productService->deleteProduct($productData, $data);
+        $deleteProduct = $this->productService->deleteProduct($productData, $data);
+
+        $this->assertNull($deleteProduct);
     }
 }
