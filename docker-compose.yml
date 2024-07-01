@@ -12,8 +12,11 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./app:/var/www/project
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx:/etc/nginx/conf.d
+      - /Users/racheal/code/product-api:/var/www/project
+    # volumes:
+    #   - ./app:/var/www/project
+    #   - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php74-service
       - mysql8-service
@@ -31,6 +34,10 @@ services:
       - "9000:9000"
     volumes:
       - /Users/racheal/code/product-api:/var/www/project
+      - ./apache-custom.conf:/etc/apache2/conf-available/custom.conf
+    command: >
+      bash -c "ln -s /etc/apache2/conf-available/custom.conf /etc/apache2/conf-enabled/custom.conf &&
+               apache2-foreground" 
     depends_on:
       - mysql8-service
     networks:
@@ -51,15 +58,5 @@ services:
       MYSQL_DATABASE: product-api
       MYSQL_USER: root
       MYSQL_PASSWORD: secret123
-    networks:
-      - nginx-php74-mysql8-node
-
-  # node
-  node-service:
-    image: node:latest
-    container_name: node-container
-    volumes:
-      - ./app:/var/www/project
-    working_dir: /var/www/project
     networks:
       - nginx-php74-mysql8-node
