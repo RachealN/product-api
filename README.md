@@ -53,9 +53,16 @@ STEP-BY-STEP INSTALLATION GUIDELINES
     `docker-compose build`
     `docker-compose up -d`
 
+  - Use these commands to interact with the docker:
+  - To access the container: `docker-compose exec -it <container name> bash`
+  - Check the status of the containers: `docker-compose ps`
+  - Start the containers by watching their logs: `docker-compose up`
+  - Start the containers in the background: `docker-compose up -d`
+  - Stop and delete the containers: `docker-compose down`
+  - Watch the container logs: `docker-compose logs`
+
 6. Symfony Installation and Configuration:
-     Access the PHP container and install PHP dependencies using Composer:
-     
+      You can do both inside the docker container or outside:
     `docker-compose exec -it php74-container bash`
     `composer install`
 
@@ -76,8 +83,9 @@ STEP-BY-STEP INSTALLATION GUIDELINES
 9. Running the Application:
     
     Start the Symfony local server: `symfony server:start`
-    The application should now be running and accessible at `http://localhost:8080`.
-    Note: This port may be different on your machine
+    The application should now be up and running.
+    NOTE: You can now access the endpoints in Postman, curl, or Insomnia(or any other tool you use in this case)
+
 
 11. Set up Authentication :
     
